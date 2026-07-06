@@ -1,17 +1,29 @@
 "use client";
 
 import { useTab } from "../context/TabContext";
+import { useRouter, usePathname } from "next/navigation";
 
+type AllowedTabs = "feed" | "create" | "chat" | "support";
 
 export default function Sidebar() {
   const { activeTab, setActiveTab } = useTab();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleTabClick = (tabName: AllowedTabs) => {
+    setActiveTab(tabName as any);
+    
+    if (pathname !== "/") {
+      router.push("/");
+    }
+  };
 
   return (
     <aside className="w-20 bg-white border-r border-gray-200 fixed left-0 top-16 h-[calc(100vh-4rem)] z-40 flex flex-col items-center justify-between py-6 shadow-sm">
       
       <div className="flex flex-col space-y-5 w-full px-3">
         <button
-          onClick={() => setActiveTab("feed")}
+          onClick={() => handleTabClick("feed")}
           title="Global Feed"
           className={`w-full aspect-square rounded-2xl flex items-center justify-center transition-all cursor-pointer ${
             activeTab === "feed"
@@ -25,7 +37,7 @@ export default function Sidebar() {
         </button>
 
         <button
-          onClick={() => setActiveTab("create")}
+          onClick={() => handleTabClick("create")}
           title="Create Post"
           className={`w-full aspect-square rounded-2xl flex items-center justify-center transition-all cursor-pointer ${
             activeTab === "create"
@@ -39,7 +51,7 @@ export default function Sidebar() {
         </button>
 
         <button
-          onClick={() => setActiveTab("chat")}
+          onClick={() => handleTabClick("chat")}
           title="Messages Matrix"
           className={`w-full aspect-square rounded-2xl flex items-center justify-center transition-all cursor-pointer ${
             activeTab === "chat"
@@ -55,7 +67,7 @@ export default function Sidebar() {
 
       <div className="w-full px-3">
         <button
-          onClick={() => setActiveTab("support")}
+          onClick={() => handleTabClick("support")}
           title="Complain & Suggestions"
           className={`w-full aspect-square rounded-2xl flex items-center justify-center transition-all cursor-pointer ${
             activeTab === "support"

@@ -20,7 +20,6 @@ export default function CustomSelect({ value, onChange, disabled }: CustomSelect
 
   const selectedOption = options.find((opt) => opt.id === value) || options[0];
 
-  // Закрываем дропдаун при клике вне его области
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -37,7 +36,6 @@ export default function CustomSelect({ value, onChange, disabled }: CustomSelect
         Message Type
       </label>
 
-      {/* Главная кнопка селекта */}
       <button
         type="button"
         disabled={disabled}
@@ -51,7 +49,6 @@ export default function CustomSelect({ value, onChange, disabled }: CustomSelect
           <span>{selectedOption.label}</span>
         </span>
         
-        {/* Стрелочка, которая переворачивается при открытии */}
         <svg
           className={`w-4 h-4 text-gray-400 stroke-[2.5] transition-transform duration-200 ${
             isOpen ? "rotate-180 text-orange-500" : ""
@@ -64,7 +61,6 @@ export default function CustomSelect({ value, onChange, disabled }: CustomSelect
         </svg>
       </button>
 
-      {/* КАСТOМНЫЙ ВЫПАДАЮЩИЙ СПИСОК */}
       {isOpen && !disabled && (
         <div className="absolute left-0 mt-1.5 w-full bg-white border-2 border-gray-100 rounded-xl shadow-xl py-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-100 overflow-hidden">
           {options.map((option) => {
