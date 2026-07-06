@@ -39,7 +39,12 @@ export default function LoginPage() {
         throw new Error(data.detail || "Invalid email or password.");
       }
 
-      Cookies.set("token", data.access_token, { expires: 1, secure: true, sameSite: "strict" });
+      Cookies.set("access_token", data.access_token, { 
+        expires: 1, 
+        secure: false, 
+        sameSite: "lax" 
+      });
+      
       Cookies.set("username", data.user.username, { expires: 1 });
 
       router.push("/dashboard");
