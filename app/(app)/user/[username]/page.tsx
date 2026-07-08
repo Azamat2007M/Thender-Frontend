@@ -52,7 +52,7 @@ export default function UserProfilePage() {
         setCurrentUsername(data.username);
       }
     } catch (err) {
-      console.error("Не удалось определить текущего пользователя", err);
+      console.error("Error fetching current user:", err);
     }
   }
 
@@ -68,14 +68,14 @@ export default function UserProfilePage() {
       });
 
       if (!response.ok) {
-        if (response.status === 404) throw new Error("Пользователь не найден");
-        throw new Error("Не удалось загрузить профиль");
+        if (response.status === 404) throw new Error("User not found");
+        throw new Error("Failed to load profile");
       }
 
       const data = await response.json();
       setProfile(data);
     } catch (err: any) {
-      setError(err.message || "Ошибка загрузки");
+      setError(err.message || "Error loading profile");
     } finally {
       setLoading(false);
     }
@@ -106,10 +106,32 @@ export default function UserProfilePage() {
         credentials: "include",
       });
 
-      if (!response.ok) throw new Error("Ошибка изменения подписки");
+      if (!response.ok) throw new Error("Error changing subscription status");
     } catch (err) {
       console.error(err);
       loadUserProfile(); 
+    }
+  };
+
+  const handleStartChat = async () => {
+    if (!profile) return;
+
+    try {
+      const response = await fetch("http://localhost:8000/chats/get-or-create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipient_id: profile.id }),
+        credentials: "include", 
+      });
+
+      if (response.ok) {
+        const chatData = await response.json();
+        router.push(`/chats/${chatData.id}`);
+      } else {
+        console.error("Failed to create or retrieve chat");
+      }
+    } catch (err) {
+      console.error("Error initializing chat:", err);
     }
   };
 
@@ -147,10 +169,10 @@ export default function UserProfilePage() {
     }
   };
 
-    if (loading) return <div className="text-center py-12 text-gray-400 animate-pulse">Loading profile...</div>;
-    if (error || !profile) {
-        notFound();
-    }
+  if (loading) return <div className="text-center py-12 text-gray-400 animate-pulse">Loading profile...</div>;
+  if (error || !profile) {
+    notFound();
+  }
   const isMyOwnProfile = profile.username === currentUsername;
 
   return (
@@ -174,16 +196,25 @@ export default function UserProfilePage() {
           </div>
 
           {!isMyOwnProfile && (
-            <button
-              onClick={handleFollow}
-              className={`px-4 py-2 font-black text-xs rounded-xl transition-all shadow-md cursor-pointer ${
-                profile.is_following
-                  ? "bg-gray-800 hover:bg-gray-700 text-white border border-gray-700"
-                  : "bg-orange-500 hover:bg-orange-600 text-black"
-              }`}
-            >
-              {profile.is_following ? "Unfollow" : "Follow"}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleStartChat}
+                className="px-4 py-2 font-black text-xs rounded-xl bg-white/10 hover:bg-white/20 text-white border border-gray-800 transition-all shadow-md cursor-pointer active:scale-95 flex items-center gap-1.5"
+              >
+                <span>💬</span> Message
+              </button>
+
+              <button
+                onClick={handleFollow}
+                className={`px-4 py-2 font-black text-xs rounded-xl transition-all shadow-md cursor-pointer active:scale-95 ${
+                  profile.is_following
+                    ? "bg-gray-800 hover:bg-gray-700 text-white border border-gray-700"
+                    : "bg-orange-500 hover:bg-orange-600 text-black"
+                }`}
+              >
+                {profile.is_following ? "Unfollow" : "Follow"}
+              </button>
+            </div>
           )}
         </div>
 

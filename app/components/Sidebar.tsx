@@ -13,8 +13,8 @@ export default function Sidebar() {
   const handleTabClick = (tabName: AllowedTabs) => {
     setActiveTab(tabName as any);
     
-    if (pathname !== "/") {
-      router.push("/");
+    if (pathname !== "/dashboard") {
+      router.push("/dashboard");
     }
   };
 
