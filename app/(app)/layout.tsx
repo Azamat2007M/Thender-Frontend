@@ -14,7 +14,6 @@ export default function AppLayout({
   return (
     <TabProvider>
       <div className="w-full min-h-screen bg-gray-50 text-black selection:bg-orange-500 selection:text-black">
-        {/* ИСПРАВЛЕНО: Обернули Navbar в Suspense, чтобы скрыть useSearchParams от сервера */}
         <Suspense fallback={
           <div className="w-full h-16 bg-white/85 border-b border-gray-200 fixed top-0 left-0 z-50" />
         }>

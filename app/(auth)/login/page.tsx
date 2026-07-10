@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import { GoogleAuthButton } from "@/app/components/GoogleAuthButton";
+import Turnstile from "react-turnstile";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +16,7 @@ export default function LoginPage() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,6 +25,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!turnstileToken) {
+      setError("Please complete the security check.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -30,7 +39,10 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ 
+          ...formData, 
+          captcha_token: turnstileToken 
+        }),
       });
 
       const data = await response.json();
@@ -41,7 +53,7 @@ export default function LoginPage() {
 
       Cookies.set("access_token", data.access_token, { 
         expires: 1, 
-        secure: false, 
+        secure: process.env.NODE_ENV === "production", 
         sameSite: "lax" 
       });
       
@@ -106,15 +118,24 @@ export default function LoginPage() {
           />
         </div>
 
+        <div className="flex justify-center my-4">
+          <Turnstile
+            sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY || ""}
+            onSuccess={(token) => setTurnstileToken(token)}
+            onExpire={() => setTurnstileToken(null)}
+            onError={() => setError("Security check failed. Please refresh.")}
+          />
+        </div>
+
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !turnstileToken}
           className="w-full h-12 bg-black hover:bg-gray-900 text-white rounded-xl font-bold text-sm tracking-wide shadow-md transition-all active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none mt-2 cursor-pointer"
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
-
+      <GoogleAuthButton />
       <p className="text-center text-sm text-gray-500 font-medium">
         Don&apos;t have an account?{" "}
         <Link href="/register" className="text-orange-500 hover:underline font-bold ml-1">

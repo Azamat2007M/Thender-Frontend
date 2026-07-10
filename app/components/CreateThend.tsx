@@ -136,7 +136,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
                     ? "bg-orange-500 text-black shadow-sm" 
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
-                title="Жирный текст"
+                title="Bold"
               >
                 B
               </button>
@@ -150,7 +150,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
                     ? "bg-orange-500 text-black shadow-sm" 
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
-                title="Курсив"
+                title="Italic"
               >
                 I
               </button>
@@ -164,7 +164,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
                     ? "bg-orange-500 text-black shadow-sm" 
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
-                title="Блок кода"
+                title="Code Block"
               >
                 &lt;/&gt;
               </button>
@@ -178,7 +178,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
                     ? "bg-orange-500 text-black shadow-sm" 
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
-                title="Цитата"
+                title="Quote"
               >
                 “ ”
               </button>
