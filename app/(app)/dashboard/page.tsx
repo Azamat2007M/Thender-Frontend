@@ -10,7 +10,7 @@ export default function DashboardPage() {
   const { activeTab } = useTab();
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
+    <div className="max-w-2xl mx-auto pt-6 space-y-6">
       {activeTab === "feed" && <ThendsFeed />}
       {activeTab === "create" && <CreateThend />}
       {activeTab === "chat" && <ThendsChat />}

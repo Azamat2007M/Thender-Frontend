@@ -19,6 +19,7 @@ interface Comment {
 interface ThendDetail {
   id: number;
   content: string;
+  image_url: string | null;
   likes_count: number;
   views_count: number;
   created_at: string;
@@ -39,10 +40,11 @@ export default function ThendDetailPage() {
   
   const [commentText, setCommentText] = useState<string>("");
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
 
   async function fetchCurrentUser() {
     try {
-      const response = await fetch("http://localhost:8000/users/me", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -59,7 +61,7 @@ export default function ThendDetailPage() {
   async function fetchThendDetail() {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8000/thends/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/thends/${id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -106,7 +108,7 @@ export default function ThendDetailPage() {
     });
 
     try {
-      const response = await fetch(`http://localhost:8000/thends/${thend.id}/like`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/thends/${thend.id}/like`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -114,11 +116,11 @@ export default function ThendDetailPage() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          alert("Вы должны быть авторизованы, чтобы ставить лайки!");
+          alert("You must be logged in to like thends!");
           fetchThendDetail();
           return;
         }
-        throw new Error("Не удалось обработать лайк");
+        throw new Error("Failed to process like");
       }
 
       const updatedData = await response.json();
@@ -135,7 +137,7 @@ export default function ThendDetailPage() {
 
     try {
       setSubmitting(true);
-      const response = await fetch(`http://localhost:8000/thends/${thend.id}/comments`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/thends/${thend.id}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: commentText.trim() }),
@@ -182,15 +184,20 @@ export default function ThendDetailPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl mx-auto pt-6 select-none">
+    <div className="space-y-6 max-w-2xl mx-auto pt-6 select-none relative">
+      
       <button 
         onClick={() => router.push("/")} 
-        className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-colors cursor-pointer"
+        className="flex items-center gap-2 text-sm font-black text-gray-500 hover:text-orange-500 bg-white hover:bg-orange-50 px-4 py-2 rounded-xl border border-gray-200 transition-all cursor-pointer shadow-sm"
       >
-        ← Back to Thends
+        <svg className="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Назад в ленту
       </button>
 
-      <article className="p-6 bg-white border border-gray-200 rounded-2xl shadow-sm space-y-4">
+      <article className="p-6 bg-white border border-gray-200 rounded-2xl shadow-sm space-y-4 relative">
+
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-xl bg-orange-500 border border-orange-600 flex items-center justify-center font-black text-black shadow-sm shrink-0">
             {thend.author.username[0].toUpperCase()}
@@ -211,9 +218,23 @@ export default function ThendDetailPage() {
           </div>
         </div>
 
-        <p className="text-gray-900 text-base leading-relaxed whitespace-pre-line font-normal">
-          {thend.content}
-        </p>
+        <div 
+          className="text-gray-900 text-xs sm:text-sm leading-relaxed font-normal prose max-w-none visual-content"
+          dangerouslySetInnerHTML={{ __html: thend.content }}
+        />
+
+        {thend.image_url && (
+          <div 
+            onClick={() => setActiveImageUrl(thend.image_url)}
+            className="w-full overflow-hidden rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center cursor-zoom-in"
+          >
+            <img 
+              src={thend.image_url} 
+              alt="Thend attachment" 
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.01]"
+            />
+          </div>
+        )}
 
         <div className="pt-2 flex items-center gap-4 text-gray-400 border-t border-gray-50">
           <button 
@@ -293,6 +314,29 @@ export default function ThendDetailPage() {
           )}
         </div>
       </div>
+
+      {activeImageUrl && (
+        <div 
+          onClick={() => setActiveImageUrl(null)} 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 cursor-zoom-out animate-in fade-in duration-200"
+        >
+          <button 
+            onClick={() => setActiveImageUrl(null)}
+            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <img 
+            src={activeImageUrl} 
+            alt="Full size view" 
+            className="max-w-full max-h-[90vh] object-contain rounded-xl select-none shadow-2xl animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()} 
+          />
+        </div>
+      )}
     </div>
   );
 }

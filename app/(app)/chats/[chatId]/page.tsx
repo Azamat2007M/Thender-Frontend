@@ -42,7 +42,7 @@ export default function ChatPage() {
   useEffect(() => {
     async function initChat() {
       try {
-        const userRes = await fetch("http://localhost:8000/users/me", { credentials: "include" }); 
+        const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, { credentials: "include" }); 
         let myId: number | null = null;
         
         if (userRes.ok) {
@@ -51,7 +51,7 @@ export default function ChatPage() {
           myId = userData.id;
         }
 
-        const chatRes = await fetch("http://localhost:8000/chats/my-chats", { credentials: "include" });
+        const chatRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chats/my-chats`, { credentials: "include" });
         if (chatRes.ok && myId) {
           const chats = await chatRes.json();
           const currentChat = chats.find((c: any) => c.id === Number(chatId));
@@ -65,7 +65,7 @@ export default function ChatPage() {
               ? currentChat.user_two_id 
               : currentChat.user_one_id;
 
-            const companionRes = await fetch(`http://localhost:8000/users/${companionId}`, { credentials: "include" });
+            const companionRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${companionId}`, { credentials: "include" });
             if (companionRes.ok) {
               const companionData = await companionRes.json();
               setCompanion(companionData);
@@ -90,7 +90,7 @@ export default function ChatPage() {
     if (!chatId || chatId === "undefined" || !currentUserId) return;
     if (socketRef.current) return;
 
-    const wsUrl = `ws://localhost:8000/chats/ws/${chatId}`;
+    const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL}/chats/ws/${chatId}`;
     const ws = new WebSocket(wsUrl);
     socketRef.current = ws;
 

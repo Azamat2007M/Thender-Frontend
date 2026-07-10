@@ -18,7 +18,7 @@ export default function ThendsSupport() {
     const currentUsername = Cookies.get("username") || "Anonymous";
 
     try {
-      const response = await fetch("http://localhost:8000/support/report", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/support/report`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export default function ThendsSupport() {
           disabled={loading}
           className="w-full h-12 bg-black hover:bg-gray-900 text-white rounded-xl font-bold text-sm tracking-wide shadow-md transition-all active:scale-[0.99] cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
         >
-          {loading ? "Routing through proxy..." : "Send to Telegram Support"}
+          {loading ? "Sending..." : "Send a report"}
         </button>
       </form>
     </div>

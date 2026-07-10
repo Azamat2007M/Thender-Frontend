@@ -28,7 +28,7 @@ export default function DashboardChats() {
   useEffect(() => {
     const fetchMyChats = async () => {
       try {
-        const userRes = await fetch("http://localhost:8000/users/me", { credentials: "include" });
+        const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, { credentials: "include" });
         let myId: number | null = null;
         if (userRes.ok) {
           const userData = await userRes.json();
@@ -38,7 +38,7 @@ export default function DashboardChats() {
 
         if (!myId) return;
 
-        const res = await fetch("http://localhost:8000/chats/my-chats", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chats/my-chats`, {
           headers: { "Content-Type": "application/json" },
           credentials: "include", 
         });
@@ -59,7 +59,7 @@ export default function DashboardChats() {
           await Promise.all(
             companionIds.map(async (id) => {
               try {
-                const uRes = await fetch(`http://localhost:8000/users/${id}`, { credentials: "include" });
+                const uRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, { credentials: "include" });
                 if (uRes.ok) {
                   const uData = await uRes.json();
                   userMap[id] = uData.username;
