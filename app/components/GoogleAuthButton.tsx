@@ -1,7 +1,6 @@
 "use client";
 
 import { GoogleLogin } from '@react-oauth/google';
-import Cookies from 'js-cookie';
 import { useState, memo, useCallback } from 'react'; 
 
 export const GoogleAuthButton = memo(function GoogleAuthButton() {
@@ -14,6 +13,7 @@ export const GoogleAuthButton = memo(function GoogleAuthButton() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", 
         body: JSON.stringify({ token: credentialResponse.credential }),
       });
 
@@ -23,19 +23,17 @@ export const GoogleAuthButton = memo(function GoogleAuthButton() {
         throw new Error(data.detail || "Google authentication failed");
       }
 
-      Cookies.set("access_token", data.access_token, { 
-        expires: 1, 
-        secure: process.env.NODE_ENV === "production", 
-        sameSite: "lax" 
-      });
-      
-      Cookies.set("username", data.user.username, { expires: 1 });
+      localStorage.setItem("username", data.user.username);
 
       window.location.href = "/dashboard";
     } catch (err: any) {
       setError(err.message);
       console.error("Google Auth Error:", err);
     }
+  }, []);
+
+  const handleGoogleError = useCallback(() => {
+    setError("Google Sign-In failed. Try again.");
   }, []);
 
   return (
@@ -47,7 +45,7 @@ export const GoogleAuthButton = memo(function GoogleAuthButton() {
       <div className="w-full flex justify-center">
         <GoogleLogin
           onSuccess={handleGoogleSuccess}
-          onError={useCallback(() => setError("Google Sign-In failed. Try again."), [])}
+          onError={handleGoogleError}
           useOneTap={false}
           theme="outline"
           size="large"

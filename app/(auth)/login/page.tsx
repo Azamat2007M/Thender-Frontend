@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import Cookies from "js-cookie";
 import { GoogleAuthButton } from "@/app/components/GoogleAuthButton";
 import Turnstile from "react-turnstile";
 
@@ -39,7 +38,7 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        credentials: "include", 
         body: JSON.stringify({ 
           ...formData, 
           captcha_token: turnstileToken 
@@ -52,13 +51,7 @@ export default function LoginPage() {
         throw new Error(data.detail || "Invalid email or password.");
       }
 
-      Cookies.set("access_token", data.access_token, { 
-        expires: 1, 
-        secure: process.env.NODE_ENV === "production", 
-        sameSite: "lax" 
-      });
-      
-      Cookies.set("username", data.user.username, { expires: 1 });
+      localStorage.setItem("username", data.user.username);
 
       router.push("/dashboard");
     } catch (err: any) {
