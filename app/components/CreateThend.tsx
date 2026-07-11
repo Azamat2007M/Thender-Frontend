@@ -14,7 +14,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
-
+  const [editorStateTick, setEditorStateTick] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
@@ -25,6 +25,9 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
         class: "w-full min-h-[120px] max-h-[300px] overflow-y-auto p-4 bg-gray-50 border-2 border-gray-100 rounded-b-xl focus:outline-none focus:border-orange-500 focus:bg-white text-sm text-black transition-all font-medium prose max-w-none disabled:opacity-60",
       },
     },
+    onUpdate: () => setEditorStateTick((prev) => prev + 1),
+    onSelectionUpdate: () => setEditorStateTick((prev) => prev + 1),
+    onTransaction: () => setEditorStateTick((prev) => prev + 1),
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,8 +78,12 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
     if (!editor) return;
 
     const htmlContent = editor.getHTML();
+    const textContent = editor.getText().trim(); 
     
-    if (editor.isEmpty) return;
+    if (!textContent && !image) {
+      setError("Post cannot be completely empty.");
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -97,7 +104,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
 
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error("Session expired or you are not authorized. Please log in again.");
+          throw new Error("Session expired. Please log in again.");
         }
         throw new Error("Failed to publish thend. Please try again.");
       }
@@ -109,13 +116,15 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
         onThendCreated();
       }
     } catch (err: any) {
-      setError(err.message?.detail || "Something went wrong");
+      setError(err.message || "Something went wrong");
       console.error("Error creating thend:", err);
     } 
     finally {
       setLoading(false);
     }
   };
+
+  const isEditorEmpty = editor ? editor.getText().trim() === "" : true;
 
   return (
     <div className="bg-white border border-gray-200 p-4 sm:p-6 rounded-2xl shadow-sm space-y-4 max-w-full">
@@ -248,8 +257,8 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
         <div className="flex items-center justify-end pt-1">
           <button 
             type="submit"
-            disabled={loading || editor?.isEmpty}
-            className="w-full sm:w-auto px-6 h-10 sm:h-11 bg-black hover:bg-gray-900 text-white font-bold rounded-xl text-xs sm:text-sm transition-all cursor-pointer shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            disabled={loading || (isEditorEmpty && !image)}
+            className="w-full sm:w-auto px-6 h-10 sm:h-11 bg-black hover:bg-gray-900 text-white font-bold rounded-xl text-xs sm:text-sm transition-all cursor-pointer shadow-md disabled:opacity-40 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
