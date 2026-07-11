@@ -109,7 +109,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
         onThendCreated();
       }
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
+      setError(err.message?.detail || "Something went wrong");
       console.error("Error creating thend:", err);
     } 
     finally {
@@ -127,13 +127,14 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
           
           {editor && (
             <div className="flex flex-wrap items-center gap-1 bg-gray-50/80 backdrop-blur-sm p-2 border-b border-gray-100 select-none">
+              
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 disabled={loading}
                 className={`px-3 py-1.5 text-xs font-extrabold rounded-lg cursor-pointer transition-all ${
                   editor.isActive("bold") 
-                    ? "bg-orange-500 text-black shadow-sm" 
+                    ? "bg-orange-500 text-black shadow-sm font-black" 
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
                 title="Bold"
@@ -147,7 +148,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
                 disabled={loading}
                 className={`px-3 py-1.5 text-xs italic font-serif rounded-lg cursor-pointer transition-all ${
                   editor.isActive("italic") 
-                    ? "bg-orange-500 text-black shadow-sm" 
+                    ? "bg-orange-500 text-black shadow-sm font-black" 
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
                 title="Italic"
@@ -161,7 +162,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
                 disabled={loading}
                 className={`px-2.5 py-1.5 text-xs font-mono rounded-lg cursor-pointer transition-all ${
                   editor.isActive("codeBlock") 
-                    ? "bg-orange-500 text-black shadow-sm" 
+                    ? "bg-orange-500 text-black shadow-sm font-black" 
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
                 title="Code Block"
@@ -175,7 +176,7 @@ export default function CreateThend({ onThendCreated }: CreateThendProps) {
                 disabled={loading}
                 className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer transition-all ${
                   editor.isActive("blockquote") 
-                    ? "bg-orange-500 text-black shadow-sm" 
+                    ? "bg-orange-500 text-black shadow-sm font-black" 
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
                 title="Quote"
