@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { TabProvider } from "../context/TabContext";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import { Suspense } from "react";
 
 export default function AppLayout({
   children,
@@ -24,13 +23,13 @@ export default function AppLayout({
         });
 
         if (!response.ok) {
-          router.push("/login");
+          router.replace("/login"); 
         } else {
           setLoading(false);
         }
       } catch (err) {
         console.error("Auth verification failed:", err);
-        router.push("/login");
+        router.replace("/login"); 
       }
     };
 
