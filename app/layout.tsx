@@ -13,9 +13,63 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://thender.app";
+
 export const metadata: Metadata = {
-  title: "Thender",
-  description: "A social media platform built on the Thender protocol.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Thender — Decentralized Social Network",
+    template: "%s | Thender", 
+  },
+  description:
+    "A modern social media platform built on the Thender protocol. Connect, share, and communicate seamlessly.",
+  keywords: ["Thender", "social network", "protocol", "web3", "chat", "media"],
+  authors: [{ name: "Thender Team" }],
+  creator: "Thender",
+  
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/Logo.svg",
+  },
+
+  openGraph: {
+    type: "website",
+    locale: "en_US", 
+    url: siteUrl,
+    title: "Thender — Decentralized Social Network",
+    description:
+      "A modern social media platform built on the Thender protocol. Connect, share, and communicate seamlessly.",
+    siteName: "Thender",
+    images: [
+      {
+        url: "/og-image.png", 
+        width: 1200,
+        height: 630,
+        alt: "Thender Social Media Platform",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Thender — Decentralized Social Network",
+    description:
+      "A modern social media platform built on the Thender protocol.",
+    images: ["/og-image.png"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
