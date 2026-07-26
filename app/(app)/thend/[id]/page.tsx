@@ -176,7 +176,7 @@ export default function ThendDetailPage() {
     return (
       <div className="p-6 bg-red-50 border-2 border-red-100 rounded-2xl text-center text-red-700 font-bold">
         ❌ Error: {error || "Thend not found"}
-        <button onClick={() => router.push("/")} className="block mx-auto mt-4 text-sm text-orange-500 underline">
+        <button onClick={() => router.push("/dashboard")} className="block mx-auto mt-4 text-sm text-orange-500 underline">
           ← Back to Thends
         </button>
       </div>
@@ -187,13 +187,13 @@ export default function ThendDetailPage() {
     <div className="space-y-6 max-w-2xl mx-auto pt-6 select-none relative">
       
       <button 
-        onClick={() => router.push("/")} 
+        onClick={() => router.push("/dashboard")} 
         className="flex items-center gap-2 text-sm font-black text-gray-500 hover:text-orange-500 bg-white hover:bg-orange-50 px-4 py-2 rounded-xl border border-gray-200 transition-all cursor-pointer shadow-sm"
       >
         <svg className="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
-        Назад в ленту
+        Back to Thends
       </button>
 
       <article className="p-6 bg-white border border-gray-200 rounded-2xl shadow-sm space-y-4 relative">
