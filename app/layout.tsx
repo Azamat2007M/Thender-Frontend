@@ -13,7 +13,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://thender.app";
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://thender-frontend.vercel.app";
+const siteUrl = rawSiteUrl.replace(/\/$/, "");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -28,8 +29,8 @@ export const metadata: Metadata = {
   creator: "Thender",
   
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
+    icon: "/Logo.svg",
+    shortcut: "/Logo.svg",
     apple: "/Logo.svg",
   },
 
@@ -43,9 +44,10 @@ export const metadata: Metadata = {
     siteName: "Thender",
     images: [
       {
-        url: "/og-image.png", 
+        url: `${siteUrl}/og-image.png`, 
         width: 1200,
         height: 630,
+        type: "image/png", 
         alt: "Thender Social Media Platform",
       },
     ],
@@ -56,7 +58,7 @@ export const metadata: Metadata = {
     title: "Thender — Decentralized Social Network",
     description:
       "A modern social media platform built on the Thender protocol.",
-    images: ["/og-image.png"],
+    images: [`${siteUrl}/og-image.png`],
   },
 
   robots: {
