@@ -104,15 +104,15 @@ export default function ProfilePage() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error("Вы должны быть авторизованы для просмотра этого раздела");
+          throw new Error("Unauthorized. Please log in.");
         }
-        throw new Error(`Ошибка загрузки данных: ${response.status}`);
+        throw new Error(`Error loading data: ${response.status}`);
       }
 
       const data = await response.json();
       setThends(data);
     } catch (err: any) {
-      setError(err.message || "Ошибка загрузки");
+      setError(err.message || "Error loading data");
       console.error(err);
     } finally {
       setLoading(false);
@@ -191,7 +191,7 @@ export default function ProfilePage() {
           </div>
           <div className="min-w-0">
             <h2 className="text-base sm:text-xl font-black tracking-tight text-white truncate">@{userProfile.username}</h2>
-            <p className="text-[10px] sm:text-xs text-gray-400 font-medium mt-0.5">Developer's personal cabinet</p>
+            <p className="text-[10px] sm:text-xs text-gray-400 font-medium mt-0.5">Thender's personal cabinet</p>
           </div>
         </div>
 
