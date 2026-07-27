@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     title: "Thender — Decentralized Social Network",
     description:
-      "A modern social media platform built on the Thender protocol. Connect, share, and communicate seamlessly.",
+      "A modern social media platform built on the powerful technology. Connect, share, and communicate seamlessly.",
     siteName: "Thender",
     images: [
       {
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Thender — Decentralized Social Network",
     description:
-      "A modern social media platform built on the Thender protocol.",
+      "A modern social media platform built on the powerful technology.",
     images: [`${siteUrl}/og-image.png`],
   },
 
